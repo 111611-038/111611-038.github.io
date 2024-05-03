@@ -7,6 +7,9 @@
 	<input type="file" id="fileinput">
 	<p>code</p>
 	<script type="application/x-javascript" crossorigin="anonymous" src="https://raw.githubusercontent.com/AlexAltea/capstone.js/master/dist/capstone.min.js"></script>
+	<script>
+		var d = new cs.Capstone(cs.ARCH_X86, cs.MODE_32);
+	</script>
 	<script defer>
 		let code = document.querySelector('p');
 		let input = document.querySelector('#fileinput');
@@ -23,7 +26,7 @@
 			let view = new DataView(array_buffer);
 			
 			let out = '';
-			for (let i=0,offset=0x674; offset<0x0136E618; i++,offset+=4){
+			for (let i=0,offset=0x674; i<100; i++,offset+=4){
 				out += get(offset) + '\n';
 			}
 			return out;
