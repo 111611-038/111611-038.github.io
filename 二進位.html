@@ -45,7 +45,7 @@
 				// Typical action to be performed when the document is ready:
 				let arraybuffer = xhttp.response;
 				const bytearray = new Uint8Array(arraybuffer);
-				code.textContent = bytearray[0];
+				code.textContent = parse(xhttp.response);
 				console.log('????????????');
 			}
 		};
