@@ -21,19 +21,21 @@
 		<pre id="address"></pre>
 		<pre id="code">code</pre>
 		<pre id="char"></pre>
+		<pre id="powerpc"></pre>
 	</div>
-	<script type="application/x-javascript" crossorigin="anonymous" src="./capstone.min.js"></script>
+	<script type="application/x-javascript" crossorigin="anonymous" src="https://alexaltea.github.io/capstone.js/dist/capstone.min.js"></script>
 	<script>
-		var buffer = [0x55, 0x31, 0xD2, 0x89, 0xE5, 0x8B, 0x45, 0x08];
+		var buffer = [0x4b, 0xff, 0xfe, 0x99];
 		var offset = 0x10000;
 		
 		// Initialize the decoder
-		var d = new cs.Capstone(cs.ARCH_X86, cs.MODE_32);
+		var d = new cs.Capstone(cs.ARCH_PPC, cs.MODE_BIG_ENDIAN);
 		
 		// Output: Array of cs.Instruction objects
 		var instructions = d.disasm(buffer, offset);
 		
 		// Display results;
+		console.log(instructions)
 		instructions.forEach(function (instr) {
 		    console.log("0x%s:\t%s\t%s",
 			instr.address.toString(16),
@@ -48,10 +50,14 @@
 	<script defer>
 		let address = document.querySelector('#address');
 		let code = document.querySelector('#code');
+		let char = document.querySelector('#char');
+		let powerpc = document.querySelector('#powerpc');
 		let file_input = document.querySelector('#file_input');
 		let offset_input = document.querySelector('#offset_input');
 		let view;
-		let char = document.querySelector('#char');
+		
+		let disassembler = new cs.Capstone(cs.ARCH_PPC, cs.MODE_BIG_ENDIAN);
+		
 		file_input.addEventListener('change', function(){
 			let filereader = new FileReader();
 			//console.log(this.file
@@ -65,25 +71,35 @@
 		offset_input.addEventListener('input', function(){
 			if (view == undefined) return;
 			
-			parse(view, parseInt(offset_input.value), address, code, char);
+			
+			parse(view, parseInt(offset_input.value), address, code, char, powerpc);
 		}, false);
 		function parse(view,x=0x674,address,code,char){
 			//console.log(view)
 			let out = {code:'', char:'', address:''};
-			for (let i=0,offset=x; i<100; i++,offset+=16){
-				out.address += offset.toString(16) + '\n';
+			let bytearray = [];
+			for (let i=0,offset=x; i<100; i++,offset+=4){
+				out.address += '_' + offset.toString(16) + '\n';
+				out.code += get(offset).padStart(8, '0') + ' ';
 				for (let ii=0; ii<4; ii++){
-					out.code += get(offset+4*ii).padStart(8, '0') + ' ';
-				}
-				for (let ii=0; ii<16; ii++){
 					out.char += String.fromCharCode(view.getUint8(offset+ii));
+					bytearray.push(view.getUint8(offset+ii));
 				}
 				out.code += '\n';
-				out.char += '\n';
+				out.char += (i%4 === 0) ? '\n\n\n\n' : '';
 			}
 			address.textContent = out.address;
 			code.textContent = out.code;
 			char.textContent = out.char;
+			//console.log(bytearray)
+			let instructions = disassembler.disasm(bytearray, 0x674);
+			
+			//
+			let a = '';
+			for (let i=0; i<instructions.length; i++){
+				a += instructions[i].mnemonic + ' ' + instructions[i].op_str + '\n';
+			}
+			powerpc.textContent = a;
 			
 			//return out;
 			
