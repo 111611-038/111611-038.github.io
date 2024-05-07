@@ -2,11 +2,27 @@
 <head>
 	<title>二進位</title>
 	<!--<link type="text/txt" href="C:/Users/User/Desktop/Splatoon/Splatoon/mlc01/usr/title/00050000/10176900/code/splatoon0">-->
+	<style>
+		#container {
+			display: flex;
+			justify-content: center;
+		}
+		#container * {
+			margin: 10px;
+			border-left: solid black 2px;
+			border-right: solid black 2px;
+		}
+	</style>
 </head>
 <body>
-	<input type="file" id="fileinput">
-	<p>code</p>
-	<script type="application/x-javascript" crossorigin="anonymous" src="./capstone.min.js">
+	<input type="file" id="file_input">
+	<input type="" id ="offset_input"></input>
+	<div id="container" style="">
+		<pre id="address"></pre>
+		<pre id="code">code</pre>
+		<pre id="char"></pre>
+	</div>
+	<script type="application/x-javascript" crossorigin="anonymous" src="./capstone.min.js"></script>
 	<script>
 		var buffer = [0x55, 0x31, 0xD2, 0x89, 0xE5, 0x8B, 0x45, 0x08];
 		var offset = 0x10000;
@@ -26,33 +42,59 @@
 		    );
 		});
 
-// Delete decoder
-d.close();
+		// Delete decoder
+		d.close();
 	</script>
 	<script defer>
-		let code = document.querySelector('p');
-		let input = document.querySelector('#fileinput');
-		input.addEventListener('change', function(){
+		let address = document.querySelector('#address');
+		let code = document.querySelector('#code');
+		let file_input = document.querySelector('#file_input');
+		let offset_input = document.querySelector('#offset_input');
+		let view;
+		let char = document.querySelector('#char');
+		file_input.addEventListener('change', function(){
 			let filereader = new FileReader();
 			//console.log(this.file
 			filereader.readAsArrayBuffer(this.files[0]);
 			filereader.onload = function(){
 				console.log('上傳成功');
-				code.textContent = parse(filereader.result);
+				view = new DataView(filereader.result);
+				//code.textContent = parse(view, 0x674);
 			}
 		}, false);
-		function parse(array_buffer){
-			let view = new DataView(array_buffer);
+		offset_input.addEventListener('input', function(){
+			if (view == undefined) return;
 			
-			let out = '';
-			for (let i=0,offset=0x674; i<100; i++,offset+=4){
-				out += get(offset) + '\n';
+			parse(view, parseInt(offset_input.value), address, code, char);
+		}, false);
+		function parse(view,x=0x674,address,code,char){
+			//console.log(view)
+			let out = {code:'', char:'', address:''};
+			for (let i=0,offset=x; i<100; i++,offset+=16){
+				out.address += offset.toString(16) + '\n';
+				for (let ii=0; ii<4; ii++){
+					out.code += get(offset+4*ii).padStart(8, '0') + ' ';
+				}
+				for (let ii=0; ii<16; ii++){
+					out.char += String.fromCharCode(view.getUint8(offset+ii));
+				}
+				out.code += '\n';
+				out.char += '\n';
 			}
-			return out;
+			address.textContent = out.address;
+			code.textContent = out.code;
+			char.textContent = out.char;
+			
+			//return out;
 			
 			
 			function get(offset){
-				return (view.getUint32(offset)).toString(16)
+				try{
+					return (view.getUint32(offset)).toString(16)
+				} catch {
+					console.warn(offset.toString(16));
+					return 99;
+				}
 			}
 		}
 		let x = `
@@ -67,7 +109,8 @@ d.close();
 				// Typical action to be performed when the document is ready:
 				let arraybuffer = xhttp.response;
 				const bytearray = new Uint8Array(arraybuffer);
-				code.textContent = parse(xhttp.response);
+				view = new DataView(xhttp.response);
+				//code.textContent = parse(xhttp.response);
 				console.log('得到splatoon了');
 			}
 		};
