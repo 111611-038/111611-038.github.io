@@ -76,30 +76,39 @@
 		}, false);
 		function parse(view,x=0x674,address,code,char){
 			//console.log(view)
-			let out = {code:'', char:'', address:''};
+			let out = {address:'', code:'', char:'', instruction:''};
 			let bytearray = [];
 			for (let i=0,offset=x; i<100; i++,offset+=4){
 				out.address += '_' + offset.toString(16) + '\n';
-				out.code += get(offset).padStart(8, '0') + ' ';
+				out.code += get(offset).padStart(8, '0') + '\n';
+
+				bytearray = [];
 				for (let ii=0; ii<4; ii++){
 					out.char += String.fromCharCode(view.getUint8(offset+ii));
 					bytearray.push(view.getUint8(offset+ii));
 				}
-				out.code += '\n';
-				out.char += (i%4 === 0) ? '\n\n\n\n' : '';
+				
+				out.char += '\n';
+
+				try {
+					let dis = disassembler.disasm(bytearray, offset)[0];
+					out.instructions[i] = dis.mnemonic +' '+ dis.op_str+'\n';
+				} catch {
+					out.instructions[i] = '??' + bytearray.join('') + '\n';
+				}
 			}
 			address.textContent = out.address;
 			code.textContent = out.code;
 			char.textContent = out.char;
 			//console.log(bytearray)
-			let instructions = disassembler.disasm(bytearray, 0x674);
+			/*let instructions = disassembler.disasm(bytearray, x);
 			
 			//
 			let a = '';
 			for (let i=0; i<instructions.length; i++){
 				a += instructions[i].mnemonic + ' ' + instructions[i].op_str + '\n';
 			}
-			powerpc.textContent = a;
+			powerpc.textContent = a;*/
 			
 			//return out;
 			
