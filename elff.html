@@ -92,14 +92,15 @@
 
 				try {
 					let dis = disassembler.disasm(bytearray, offset)[0];
-					out.instructions[i] = dis.mnemonic +' '+ dis.op_str+'\n';
+					out.instructions += dis.mnemonic +' '+ dis.op_str+'\n';
 				} catch {
-					out.instructions[i] = '??' + bytearray.join('') + '\n';
+					out.instructions += '??' + bytearray.join('') + '\n';
 				}
 			}
 			address.textContent = out.address;
 			code.textContent = out.code;
 			char.textContent = out.char;
+			powerpc.textContent = out.instruction;
 			//console.log(bytearray)
 			/*let instructions = disassembler.disasm(bytearray, x);
 			
