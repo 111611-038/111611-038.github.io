@@ -91,10 +91,10 @@
 				out.char += '\n';
 
 				try {
-					let dis = disassembler.disasm(bytearray, offset)[0];console.log(bytearray, dis);
-					out.instructions += dis.mnemonic +' '+ dis.op_str+'\n';
+					let dis = disassembler.disasm(bytearray, offset)[0];
+					out.instruction += dis.mnemonic +' '+ dis.op_str+'\n';
 				} catch {
-					out.instructions += '??' + bytearray.join('') + '\n';
+					out.instruction += '??  ' + bytearray.map(x => x.toString(16).padStart(2,'0')).join('') + '\n';
 				}
 			}
 			address.textContent = out.address;
