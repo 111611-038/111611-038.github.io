@@ -16,6 +16,10 @@
 </head>
 <body>
 	<input type="file" id="file_input">
+	<select>
+    		<option selected>splatoon0</option>
+		<option>zelda.elf</option>
+	</select>
 	<input type="" id ="offset_input"></input>
 	<div id="container" style="">
 		<pre id="address"></pre>
@@ -137,11 +141,18 @@
 				const bytearray = new Uint8Array(arraybuffer);
 				view = new DataView(xhttp.response);
 				//code.textContent = parse(xhttp.response);
-				console.log('得到splatoon了');
+				console.log('得到了');
 			}
 		};
 		xhttp.open("GET", 'https://raw.githubusercontent.com/111611-038/elf/main/splatoon0', true);
 		xhttp.send();
+
+		let s = document.querySelector('select');
+		s.addEventListener('change', function(){
+  			//console.log(s.value);
+			xhttp.open("GET", 'https://raw.githubusercontent.com/111611-038/elf/main/'+s.value, true);
+			xhttp.send();
+		}, false);
 	</script>
 </body>
 </html>
