@@ -88,7 +88,7 @@
 
 				bytearray = [];
 				for (let ii=0; ii<4; ii++){
-					out.char += String.fromCharCode(view.getUint8(offset+ii));
+					out.char += String.fromCharCode(view.getUint8(offset+ii)).replace('\n', '\\');
 					bytearray.push(view.getUint8(offset+ii));
 				}
 				
