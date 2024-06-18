@@ -23,9 +23,9 @@
 	<input type="" id ="offset_input"></input>
 	<div id="container" style="">
 		<pre id="address"></pre>
-		<pre id="code">code</pre>
-		<pre id="char"></pre>
 		<pre id="powerpc"></pre>
+		<pre id="char"></pre>
+		<pre id="code">code</pre>
 	</div>
 	<script type="application/x-javascript" crossorigin="anonymous" src="https://alexaltea.github.io/capstone.js/dist/capstone.min.js"></script>
 	<script>
@@ -83,7 +83,7 @@
 			let out = {address:'', code:'', char:'', instruction:''};
 			let bytearray = [];
 			for (let i=0,offset=x; i<100; i++,offset+=4){
-				out.address += '_' + offset.toString(16) + '\n';
+				out.address += ':0x' + offset.toString(16) + '\n';
 				out.code += get(offset).padStart(8, '0') + '\n';
 
 				bytearray = [];
