@@ -19,6 +19,7 @@
 	<select>
     		<option selected>splatoon0</option>
 		<option>zelda.elf</option>
+		<option>mariokart7.txt</option>
 	</select>
 	<input type="" id ="offset_input"></input>
 	<div id="container" style="">
@@ -60,7 +61,8 @@
 		let offset_input = document.querySelector('#offset_input');
 		let view;
 		
-		let disassembler = new cs.Capstone(cs.ARCH_PPC, cs.MODE_BIG_ENDIAN);
+		//let disassembler = new cs.Capstone(cs.ARCH_PPC, cs.MODE_BIG_ENDIAN);
+		let disassembler = new cs.Capstone(cs.ARCH_ARM, cs.MODE_LITTLE_ENDIAN);
 		
 		file_input.addEventListener('change', function(){
 			let filereader = new FileReader();
