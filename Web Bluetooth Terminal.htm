@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="msapplication-TileColor" content="#2196f3">
+    <meta name="msapplication-config" content="browserconfig.xml">
+    <meta name="theme-color" content="#2196f3">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="msapplication-starturl" content="./">
+    <meta name="description" content="Progressive Web Application for serial communication with your own Bluetooth Low Energy (Smart) devices">
+
+    <title>Web Bluetooth Terminal</title>
+
+    <link rel="manifest" href="https://loginov-rocks.github.io/Web-Bluetooth-Terminal/manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://loginov-rocks.github.io/Web-Bluetooth-Terminal/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://loginov-rocks.github.io/Web-Bluetooth-Terminal/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://loginov-rocks.github.io/Web-Bluetooth-Terminal/icons/favicon-16x16.png">
+    <link rel="mask-icon" href="https://loginov-rocks.github.io/Web-Bluetooth-Terminal/icons/safari-pinned-tab.svg" color="#2196f3">
+    <link rel="shortcut icon" href="https://loginov-rocks.github.io/Web-Bluetooth-Terminal/icons/favicon.ico">
+
+    <link href="./Web Bluetooth Terminal_files/css" rel="stylesheet">
+    <link href="./Web Bluetooth Terminal_files/icon" rel="stylesheet">
+    <link href="./Web Bluetooth Terminal_files/normalize.css" rel="stylesheet">
+    <link href="./Web Bluetooth Terminal_files/styles.css" rel="stylesheet">
+    
+    <style>
+      .grid-container {
+        border: 2px black solid;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+      }
+      #up {
+        grid-area: 1/2/span 1/span 1;
+      }
+      #left {
+        grid-area: 2/1/span 1/span 1;
+      }
+      #right {
+        grid-area: 2/3/span 1/span 1;
+      }
+      #down {
+        grid-area: 3/2/span 1/span 1;
+      }
+
+      .flex-container {
+        border: 2px black solid;
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: space-around;
+      }
+      .grid-container > button {
+        width: 90%;
+        height: 50px;
+      }
+      .flex-container > button {
+        width: 25%;
+        height: 50px;
+      }
+    </style>
+
+</head>
+<body>
+
+    <div class="app">
+
+        <div class="toolbar">
+
+            <div id="device-name" class="name">Terminal</div>
+
+            <div class="buttons">
+
+                <button id="connect" type="button" aria-label="Connect">
+                    <i class="material-icons">bluetooth_connected</i>
+                </button>
+
+                <button id="disconnect" type="button" aria-label="Disconnect">
+                    <i class="material-icons">bluetooth_disabled</i>
+                </button>
+
+            </div>
+
+        </div>
+
+        <div id="terminal" class="terminal"></div>
+
+        <form id="send-form" class="send-form">
+
+            <input id="input" type="text" aria-label="Input" autocomplete="off" placeholder="Type something to send...">
+
+            <button type="submit" aria-label="Send">
+                <i class="material-icons">send</i>
+            </button>
+
+        </form>
+      
+      <br><hr><br>
+      <div class="grid-container">
+        <button id="up" value="F">上</button>
+        <button id="left" value="R">左</button>
+        <button id="right" value="L">右</button>
+        <button id="down" value="B">下</button>
+      </div>
+      <br>  
+      <div class="flex-container">
+        <button id="bt1-1" value="1">1</button>
+        <button id="bt1-2" value="2">2</button>
+        <button id="bt1-3" value="3">3</button>
+      </div>
+      <br>
+      <div class="flex-container">
+        <button id="bt2-1" value="a">a</button>
+        <button id="bt2-2" value="b">b</button>
+        <button id="bt2-3" value="c">c</button>
+      </div>
+
+    </div>
+
+    <script src="./Web Bluetooth Terminal_files/BluetoothTerminal.js"></script>
+    <script src="./Web Bluetooth Terminal_files/main.js"></script>
+    <script src="./Web Bluetooth Terminal_files/companion.js" data-service-worker="sw.js"></script>
+    
+  <script>
+    let bt = document.querySelectorAll('button');
+    for (let i=0; i<bt.length; i++){
+      bt[i].onmousedown = function(){
+        send(bt[i].value);
+      }
+      bt[i].onmouseup = function(){
+        send('S');
+      }
+    }
+  </script>
+
+
+
+</body></html>
